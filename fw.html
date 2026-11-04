@@ -1,0 +1,630 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Цветочная лавка "FloweryWorld"</title>
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🌸</text></svg>">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Arial', sans-serif;
+        }
+
+        body {
+            background-color: #f5f5f5;
+            color: #333;
+            line-height: 1.6;
+        }
+
+        header {
+            background-color: #2c5f2d;
+            color: white;
+            padding: 20px;
+            text-align: center;
+        }
+
+        nav {
+            display: flex;
+            justify-content: center;
+            gap: 20px;
+            padding: 15px;
+            background-color: #ffffff;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+
+        nav a {
+            text-decoration: none;
+            color: #2c5f2d;
+            font-weight: bold;
+            padding: 5px 10px;
+            border-radius: 5px;
+            transition: background-color 0.3s;
+        }
+
+        nav a:hover {
+            background-color: #e8f5e9;
+        }
+
+        .cart-icon {
+            position: relative;
+        }
+
+        #cart-count {
+            position: absolute;
+            top: -10px;
+            right: -10px;
+            background: #e53935;
+            color: white;
+            border-radius: 50%;
+            padding: 2px 8px;
+            font-size: 12px;
+        }
+
+        .hero {
+            height: 400px;
+            background: linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url('img/peonies.jpg');
+            background-size: cover;
+            background-position: center;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            text-align: center;
+        }
+
+        .hero-content {
+            max-width: 800px;
+            padding: 20px;
+        }
+
+        .hero h2 {
+            font-size: 2.5rem;
+            margin-bottom: 20px;
+        }
+
+        .hero button {
+            margin-top: 20px;
+            padding: 12px 30px;
+            font-size: 1.1rem;
+            transition: background-color 0.3s;
+        }
+
+        button {
+            background-color: #2c5f2d;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 5px;
+            cursor: pointer;
+            transition: background-color 0.3s;
+        }
+
+        button:hover {
+            background-color: #1b5e20;
+        }
+
+        .products {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 30px;
+            padding: 40px;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .product-card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            text-align: center;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+            transition: transform 0.3s, box-shadow 0.3s;
+        }
+
+        .product-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 5px 15px rgba(0,0,0,0.2);
+        }
+
+        .product-card img {
+            width: 100%;
+            height: 200px;
+            object-fit: cover;
+            border-radius: 5px;
+            margin-bottom: 15px;
+        }
+
+        .price {
+            color: #2c5f2d;
+            font-size: 1.2em;
+            font-weight: bold;
+            margin: 15px 0;
+        }
+
+        .reviews {
+            padding: 60px 20px;
+            background: #fff;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .reviews h2 {
+            text-align: center;
+            margin-bottom: 40px;
+            color: #2c5f2d;
+        }
+
+        .review-card {
+            background: #f8f8f8;
+            padding: 20px;
+            border-radius: 10px;
+            margin: 20px 0;
+            border-left: 4px solid #2c5f2d;
+        }
+
+        .review-author {
+            color: #2c5f2d;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .review-date {
+            font-size: 0.8em;
+            color: #666;
+            margin-top: 10px;
+            text-align: right;
+        }
+
+        .chat-container {
+            max-width: 800px;
+            margin: 40px auto;
+            padding: 30px;
+            background: #fff;
+            border-radius: 10px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.1);
+        }
+
+        .chat-container h2 {
+            color: #2c5f2d;
+            margin-bottom: 20px;
+            text-align: center;
+        }
+
+        #chat-messages {
+            height: 400px;
+            overflow-y: auto;
+            padding: 15px;
+            background: #f5f5f5;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            border: 1px solid #ddd;
+        }
+
+        .message {
+            margin: 15px 0;
+            padding: 12px;
+            background: #e3f2fd;
+            border-radius: 8px;
+            max-width: 80%;
+        }
+
+        .timestamp {
+            font-size: 0.8em;
+            color: #666;
+            margin-left: 10px;
+        }
+
+        #message-form {
+            display: flex;
+            gap: 10px;
+        }
+
+        #message-input {
+            flex-grow: 1;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        .cart-modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0,0,0,0.5);
+            z-index: 1000;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .cart-content {
+            background: white;
+            padding: 30px;
+            width: 90%;
+            max-width: 600px;
+            border-radius: 10px;
+            max-height: 80vh;
+            overflow-y: auto;
+        }
+
+        .cart-item {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin: 15px 0;
+            padding: 15px;
+            border-bottom: 1px solid #eee;
+        }
+
+        #checkout-form input {
+            display: block;
+            width: 100%;
+            margin: 15px 0;
+            padding: 12px;
+            border: 1px solid #ddd;
+            border-radius: 5px;
+            font-size: 1em;
+        }
+
+        footer {
+            background-color: #2c5f2d;
+            color: white;
+            text-align: center;
+            padding: 30px;
+            margin-top: 50px;
+        }
+
+        footer a {
+            color: #fff;
+            text-decoration: none;
+            margin: 0 10px;
+            transition: opacity 0.3s;
+        }
+
+        footer a:hover {
+            opacity: 0.8;
+        }
+
+        .footer-links {
+            margin: 20px 0;
+        }
+
+        @media (max-width: 768px) {
+            .products {
+                grid-template-columns: repeat(2, 1fr);
+                padding: 20px;
+                gap: 15px;
+            }
+
+            .hero {
+                height: 300px;
+            }
+
+            .hero h2 {
+                font-size: 1.8rem;
+            }
+
+            nav {
+                flex-wrap: wrap;
+                gap: 10px;
+            }
+
+            .chat-container {
+                padding: 20px;
+            }
+
+            #chat-messages {
+                height: 300px;
+            }
+        }
+
+        @media (max-width: 480px) {
+            .products {
+                grid-template-columns: 1fr;
+            }
+
+            .hero h2 {
+                font-size: 1.5rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <header>
+        <h1>🌸 Цветочная лавка "FloweryWorld"</h1>
+        <p>Ваш источник свежих цветов и красивых букетов</p>
+    </header>
+
+    <nav>
+        <a href="#home">Главная</a>
+        <a href="#bouquets">Букеты</a>
+        <a href="#flowers">Цветы</a>
+        <a href="#contacts">Контакты</a>
+        <a href="#" onclick="toggleCart()" class="cart-icon">
+            🛒 <span id="cart-count">0</span>
+        </a>
+    </nav>
+
+    <section class="hero" id="home">
+        <div class="hero-content">
+            <h2>Создаём красоту для ваших моментов</h2>
+            <p>Бесплатная доставка по городу при заказе от 2000₽</p>
+            <button onclick="showCatalog()">Выбрать букет</button>
+        </div>
+    </section>
+
+    <section class="products" id="bouquets">
+        <div class="product-card">
+            <img src="img/roses.jpg" alt="Букет роз">
+            <h3>Розовая нежность</h3>
+            <p>Букет из 25 роз</p>
+            <div class="price">2500₽</div>
+            <button onclick="addToCart('Розовая нежность', 2500)">В корзину</button>
+        </div>
+
+        <div class="product-card">
+            <img src="img/wedding.jpg" alt="Свадебный букет">
+            <h3>Свадебный букет</h3>
+            <p>Белые лилии и гортензии</p>
+            <div class="price">3500₽</div>
+            <button onclick="addToCart('Свадебный букет', 3500)">В корзину</button>
+        </div>
+
+        <div class="product-card">
+            <img src="img/tulips.jpg" alt="Тюльпаны">
+            <h3>Весенние тюльпаны</h3>
+            <p>Букет из 15 разноцветных тюльпанов</p>
+            <div class="price">1800₽</div>
+            <button onclick="addToCart('Весенние тюльпаны', 1800)">В корзину</button>
+        </div>
+
+        <div class="product-card">
+            <img src="img/exotic.jpg" alt="Экзотические цветы">
+            <h3>Экзотический микс</h3>
+            <p>Композиция из орхидей и тропических растений</p>
+            <div class="price">4200₽</div>
+            <button onclick="addToCart('Экзотический микс', 4200)">В корзину</button>
+        </div>
+    </section>
+
+    <section class="reviews" id="flowers">
+        <h2>Отзывы наших клиентов</h2>
+        
+        <div class="review-card">
+            <div class="review-author">Анна, 25 лет</div>
+            <div class="review-text">Лучший цветочный магазин! Букет был свежий и доставлен вовремя. Цветы стояли больше недели, что очень порадовало.</div>
+            <div class="review-date">15.09.2025</div>
+        </div>
+
+        <div class="review-card">
+            <div class="review-author">Иван, 50 лет</div>
+            <div class="review-text">Заказывал цветы на юбилей - все остались довольны. Особенно понравился индивидуальный подход флориста при составлении букета.</div>
+            <div class="review-date">12.09.2025</div>
+        </div>
+
+        <div class="review-card">
+            <div class="review-author">Мария, 32 года</div>
+            <div class="review-text">Регулярно заказываю цветы в этом магазине. Всегда свежие, красивые букеты и приятные цены. Рекомендую!</div>
+            <div class="review-date">10.09.2025</div>
+        </div>
+    </section>
+
+    <section class="chat-container" id="contacts">
+        <h2>Онлайн-консультация</h2>
+        <div id="chat-messages"></div>
+        <form id="message-form">
+            <input type="text" 
+                   id="message-input" 
+                   placeholder="Введите ваше сообщение..."
+                   required>
+            <button type="submit">Отправить</button>
+        </form>
+    </section>
+
+    <div id="cart-modal" class="cart-modal">
+        <div class="cart-content">
+            <h2>Ваша корзина</h2>
+            <div id="cart-items"></div>
+            <div id="cart-total" style="font-weight: bold; text-align: right; margin: 20px 0;"></div>
+            <form id="checkout-form" onsubmit="handleCheckout(event)">
+                <h3>Данные для доставки</h3>
+                <input type="text" placeholder="Ваше имя" required>
+                <input type="tel" placeholder="Телефон" required pattern="[0-9]{11}">
+                <input type="email" placeholder="Email">
+                <input type="text" placeholder="Адрес доставки" required>
+                <button type="submit">Оформить заказ</button>
+                <button type="button" onclick="toggleCart()" style="background: #666; margin-left: 10px;">Закрыть</button>
+            </form>
+        </div>
+    </div>
+
+    <footer>
+        <div class="footer-links">
+            <a href="#home">Главная</a>
+            <a href="#bouquets">Букеты</a>
+            <a href="#flowers">Цветы</a>
+            <a href="#contacts">Контакты</a>
+            <a href="staff.html">Для сотрудников</a>
+        </div>
+        <p>Контакты: +7 (999) 123-45-67 | floraSarr@mail.ru</p>
+        <p>Адрес: г. Саранск, ул. Волгоградская 60/3</p>
+        <p>Режим работы: ежедневно с 9:00 до 21:00</p>
+        <p>© 2025 Цветочная лавка "FloweryWorld"</p>
+    </footer>
+
+    <script>
+        // Корзина
+        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        
+        function updateCart() {
+            document.getElementById('cart-count').textContent = cart.length;
+            localStorage.setItem('cart', JSON.stringify(cart));
+            
+            const cartItems = document.getElementById('cart-items');
+            cartItems.innerHTML = cart.map(item => `
+                <div class="cart-item">
+                    <div>${item.name}</div>
+                    <div>${item.price}₽</div>
+                </div>
+            `).join('');
+            
+            // Обновляем общую сумму
+            const total = cart.reduce((sum, item) => sum + item.price, 0);
+            document.getElementById('cart-total').textContent = `Итого: ${total}₽`;
+        }
+
+        function addToCart(name, price) {
+            cart.push({ name, price });
+            updateCart();
+            
+            // Анимация добавления в корзину
+            const cartCount = document.getElementById('cart-count');
+            cartCount.style.transform = 'scale(1.5)';
+            setTimeout(() => {
+                cartCount.style.transform = 'scale(1)';
+            }, 300);
+            
+            // Уведомление
+            showNotification(`"${name}" добавлен в корзину`);
+        }
+
+        function toggleCart() {
+            const modal = document.getElementById('cart-modal');
+            modal.style.display = modal.style.display === 'flex' ? 'none' : 'flex';
+            if (modal.style.display === 'flex') {
+                updateCart();
+            }
+        }
+
+        function handleCheckout(event) {
+            event.preventDefault();
+            if (cart.length === 0) {
+                showNotification('Корзина пуста!', 'error');
+                return;
+            }
+            
+            if (confirm('Подтвердить заказ?')) {
+                // Здесь можно добавить отправку данных на сервер
+                showNotification('Заказ оформлен! С вами свяжутся для подтверждения.', 'success');
+                cart = [];
+                updateCart();
+                toggleCart();
+                event.target.reset();
+            }
+        }
+
+        // Чат
+        const messages = JSON.parse(localStorage.getItem('chat')) || [];
+        
+        function updateChat() {
+            const chatMessages = document.getElementById('chat-messages');
+            chatMessages.innerHTML = messages.map(msg => `
+                <div class="message">
+                    <strong>${msg.author}:</strong> 
+                    ${msg.text}
+                    <span class="timestamp">${msg.time}</span>
+                </div>
+            `).join('');
+            
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+            localStorage.setItem('chat', JSON.stringify(messages));
+        }
+
+        document.getElementById('message-form').onsubmit = function(e) {
+            e.preventDefault();
+            const input = document.getElementById('message-input');
+            
+            const newMessage = {
+                author: 'Гость',
+                text: input.value,
+                time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+            };
+
+            messages.push(newMessage);
+            input.value = '';
+            updateChat();
+            
+            // Автоматический ответ (можно заменить на реальный чат с оператором)
+            setTimeout(() => {
+                const reply = {
+                    author: 'Консультант',
+                    text: 'Спасибо за ваше сообщение! Наш специалист свяжется с вами в ближайшее время.',
+                    time: new Date().toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'})
+                };
+                messages.push(reply);
+                updateChat();
+            }, 1500);
+        }
+
+        // Вспомогательные функции
+        function showNotification(message, type = 'success') {
+            const notification = document.createElement('div');
+            notification.textContent = message;
+            notification.style.position = 'fixed';
+            notification.style.bottom = '20px';
+            notification.style.right = '20px';
+            notification.style.padding = '15px 20px';
+            notification.style.backgroundColor = type === 'success' ? '#2c5f2d' : '#e53935';
+            notification.style.color = 'white';
+            notification.style.borderRadius = '5px';
+            notification.style.zIndex = '1000';
+            notification.style.animation = 'fadeIn 0.3s';
+            
+            document.body.appendChild(notification);
+            
+            setTimeout(() => {
+                notification.style.animation = 'fadeOut 0.3s';
+                setTimeout(() => {
+                    document.body.removeChild(notification);
+                }, 300);
+            }, 3000);
+        }
+
+        function showCatalog() {
+            document.querySelector('#bouquets').scrollIntoView({
+                behavior: 'smooth'
+            });
+        }
+
+        // Плавная прокрутка для навигации
+        document.querySelectorAll('nav a').forEach(anchor => {
+            anchor.addEventListener('click', function(e) {
+                if (this.getAttribute('href').startsWith('#')) {
+                    e.preventDefault();
+                    const section = document.querySelector(this.getAttribute('href'));
+                    section.scrollIntoView({ behavior: 'smooth' });
+                }
+            });
+        });
+
+        // Инициализация при загрузке
+        document.addEventListener('DOMContentLoaded', () => {
+            updateCart();
+            updateChat();
+            
+            // Добавляем стили для анимации
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes fadeIn {
+                    from { opacity: 0; transform: translateY(20px); }
+                    to { opacity: 1; transform: translateY(0); }
+                }
+                @keyframes fadeOut {
+                    from { opacity: 1; transform: translateY(0); }
+                    to { opacity: 0; transform: translateY(20px); }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+    </script>
+</body>
+</html>
